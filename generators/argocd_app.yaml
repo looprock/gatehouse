@@ -1,0 +1,34 @@
+name: ArgoCD Helm App
+description: Create a new helm based ArgoCD application
+repo:
+  url: bitbucket.org:homestoryre/platform_eng_tools.git
+  project_key: OP
+templates:
+  - base_path:
+      # since we are using the hidden form value base_path_append_env, this will actually be:
+      # kubernetes/argocd/projects/{Environment}
+      - kubernetes/argocd/projects
+    template: |
+      apiVersion: argoproj.io/v1alpha1
+      kind: Application
+      metadata:
+        name: {{ vars['name'] }}
+        namespace: argocd
+        annotations:
+          tag.homestoryrewards.com/team: {{ vars['team'] }}
+          tag.homestoryrewards.com/managed_by: {{ vars['managed_by'] }}
+      spec:
+        destination:
+          namespace: default
+          name: {{ vars['environment'] }}
+        project: {{ vars['environment'] }}
+        source:
+          # since we are using helm, we assume the values file lives under
+          # {Git path}/{Environment} directory
+          path: {{ vars['git_path'] }}/{{ vars['environment'] }}
+          repoURL: git@bitbucket.org:homestoryre/platform_eng_tools.git
+          targetRevision: HEAD
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true

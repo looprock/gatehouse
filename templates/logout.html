@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block title %}
+Logout
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+
+      <h1 class="pt-5 pb-2">You have been logged out!</h1>
+      <p class="pt-5"><a href="/login">Log in again</a></p>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+name: S3 Multiregion Buckets
+description: Create new S3 buckets in us-east-2 and us-west-1
+repo:
+  url: bitbucket.org:homestoryre/platform_eng_tools.git
+  project_key: OP
+templates:
+  - target_file: bucket.tf
+    base_path:
+      - utilities/gatehouse/us-east-2/s3
+      - utilities/gatehouse/us-west-1/s3
+    template: |
+      resource "aws_s3_bucket" "{{ vars['name'] }}" {
+          bucket = "${var.bucket_name}" 
+          acl = "${var.acl_value}"   
+      }
+  - target_file: var.tf
+    base_path:
+      - utilities/gatehouse/us-east-2/s3
+      - utilities/gatehouse/us-west-1/s3
+    template: |
+      variable "bucket_name" {}
+
+      variable "acl_value" {
+          default = "private"
+      }
+
+      variable "region1" {
+          default = "us-east-2"
+      }
+
+      variable "region2" {
+          default = "us-west-1"
+      }
+  - target_file: main.tf
+    base_path:
+      - utilities/gatehouse/us-east-2/s3
+    template: |
+      provider "aws" {
+          region = "${var.region1}"
+      }
+
+      module "s3" {
+          source = "/"
+          #bucket name should be unique
+          bucket_name = "{{ vars['name'] }}"       
+      }
+  - target_file: main.tf
+    base_path:
+      - utilities/gatehouse/us-west-1/s3
+    template: |
+      provider "aws" {
+          region = "${var.region2}"
+      }
+
+      module "s3" {
+          source = "/"
+          #bucket name should be unique
+          bucket_name = "{{ vars['name'] }}"       
+      }

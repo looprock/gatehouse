@@ -1,0 +1,51 @@
+name: test 1
+description: Example service generator
+repo:
+  url: bitbucket.org:homestoryre/platform_eng_tools.git
+  project_key: OP
+templates:
+  - target_file: test1.yaml
+    base_path:
+      - utilities/gatehouse/us-east-2
+      - utilities/gatehouse/us-west-1
+    tmpl_source_dir: templates/test
+    template: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: {{ vars['name'] }}
+        labels:
+          app: {{ vars['name'] }}
+        annotations:
+          tag.homestoryrewards.com/team: {{ vars['team'] }}
+          tag.homestoryrewards.com/managed_by: {{ vars['managed_by'] }}
+          tag.homestoryrewards.com/billing: {{ vars['billing'] }}
+          tag.homestoryrewards.com/runbook: {{ vars['runbook'] }}
+          tag.homestoryrewards.com/environment: {{ vars['environment'] }}
+      spec:
+        ports:
+        - port: 80
+          targetPort: 80
+          protocol: TCP
+        selector:
+          app: {{ vars['name'] }}
+        type: LoadBalancer
+  - base_path:
+      - utilities/gatehouse/testconfig2
+    template: |
+      apiVersion: v1
+      kind: Bar
+      metadata:
+        name: {{ vars['name'] }}
+        labels:
+          app: {{ vars['name'] }}
+        annotations:
+          tag.homestoryrewards.com/team: {{ vars['team'] }}
+          tag.homestoryrewards.com/managed_by: {{ vars['managed_by'] }}
+          tag.homestoryrewards.com/billing: {{ vars['billing'] }}
+          tag.homestoryrewards.com/runbook: {{ vars['runbook'] }}
+          tag.homestoryrewards.com/environment: {{ vars['environment'] }}
+      spec:
+        selector:
+          app: {{ vars['name'] }}
+        type: Bar

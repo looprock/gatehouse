@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block title %}
+Logout
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+
+      <h1 class="pt-5 pb-2">A PR has been created for your request at:</h1>
+      <p class="pt-5"><a href="{{ pr_url }}" target="_blank">{{ pr_url }}</a></p>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

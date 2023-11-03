@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "gatehouse"
+version = "0.1.0"
+description = "Developer Portal"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+werkzeug = "^2.3.7"
+flask = "^2.3.3"
+requests = "^2.31.0"
+bootstrap-flask = "^2.3.2"
+flask-login = "^0.6.2"
+flask-wtf = "1.1.1"
+python-dotenv = "^1.0.0"
+pyyaml = "^6.0.1"
+jinja2 = "^3.1.2"
+gitpython = "^3.1.40"
+atlassian-python-api = "^3.41.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
