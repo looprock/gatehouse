@@ -33,11 +33,7 @@ env = Environment()
 
 # TODO:
 # - auth against real google account
-#   - set up real dns
-#   - create a role username/password so I can add myself back to reviewers
-# - restrict to homestoryrewards.com
-# - verify google account is a member of dev group
-# - create generator config and templates YAML examples for: helm
+# - set up real dns
 
 app = Flask(__name__)
 app.debug = True
@@ -82,7 +78,8 @@ CLIENT_SECRET = os.environ.get('GATEHOUSE_GOOGLE_CLIENT_SECRET')
 SCOPE = os.getenv('GATEHOUSE_GOOGLE_SCOPE','openid%20email%20profile')
 REDIRECT_URI = os.getenv('GATEHOUSE_REDIRECT_URI','http://127.0.0.1:5000/oauth2callback')
 work_dir = os.getenv('GATEHOUSE_WORKDIR','/tmp/gatehouse')
-git_ssh_key = os.getenv('GATEHOUSE_SSH_KEY', f'{Path.home()}/.ssh/id_ed25519')
+git_ssh_key = os.getenv('GATEHOUSE_SSH_KEY', f'{Path.home()}/.ssh/gatehouse')
+email_domain = os.getenv('GATEHOUSE_EMAIL_DOMAIN', 'mycompany.com')
 
 # instantiate bitbucket cloud object
 cloud = Cloud(url="https://api.bitbucket.org", username=bb_user, password=bb_pass, cloud=True)
@@ -205,8 +202,6 @@ def bb_create_pr(generator_info, branch_name):
         reviewers = []
         for rev in r.default_reviewers.each():
             reviewers.append(rev.uuid)
-        # TODO: remove blow, filter my uuid from list until I get this moved
-        reviewers.remove('{577baaf8-490f-4b68-b338-1fb329c5d9d0}')
         # create PR
         response = r.pullrequests.create(
             title=branch_name,
@@ -314,10 +309,8 @@ def commit_generator(generator_info, form_vars):
         if push_response:
             return push_response
     # everything should be committed at this point so clean up
-    # TODO: uncomment this when ready to deploy
-    # shutil.rmtree(local_base)
-    # return bb_create_pr(generator_info, branch_name)
-    return 'hi'
+    shutil.rmtree(local_base)
+    return bb_create_pr(generator_info, branch_name)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -367,7 +360,7 @@ def oauth2callback():
         return "User email not available or not verified by Google.", 400
     # TODO: remove trackhearing.com when ready to deploy with 'real' auth config
     email_suffix = users_email.split('@')[1]
-    if email_suffix != 'homestoryrewards.com' and email_suffix != 'trackhearing.com':
+    if email_suffix != email_domain:
         return f"User email {users_email} not valid for this site!.", 400
     # Create a user in your db with the information provided by Google
     user = User(

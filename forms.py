@@ -52,5 +52,6 @@ class helm_extpostgresoperatorForm(FlaskForm):
     environment = SelectField(u'Environment', choices=env_choices)
     # setting base_path_append_env will cause '/{environment}' to be appended to all base_path entries
     base_path_append_env = HiddenField('Base Path Append Env')
+    # copy tmpl_source_dir to base_path (not base_path/{environment})
     cp_base_path_origin = HiddenField('Copy Base Path Origin')
     submit = SubmitField('Submit')

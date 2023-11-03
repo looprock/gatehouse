@@ -14,7 +14,7 @@ Gatehouse is a GitOps driven dashboard to allow developers to provision resource
 name: The name that shows up in the first page of generators, RE: Create S3 Bucket
 description: The description that shows up in the first page of generators, RE: Make an S3 Bucket
 repo:
-  url: The bitbucket URL for the repo (minus login and protocol), RE: bitbucket.org:homestoryre/platform_eng_tools.git
+  url: The bitbucket URL for the repo (minus login and protocol), RE: bitbucket.org:myorg/myrepo.git
   project_key: The bitbucket project key, RE: OP
 templates: - This section is a list of templates we want generated
   - base_path: A list of directories you want the above file written to (see Special form values below), RE: 
@@ -30,11 +30,11 @@ templates: - This section is a list of templates we want generated
         labels:
           app: {{ vars['name'] }}
         annotations:
-          tag.homestoryrewards.com/team: {{ vars['team'] }}
-          tag.homestoryrewards.com/managed_by: {{ vars['managed_by'] }}
-          tag.homestoryrewards.com/billing: {{ vars['billing'] }}
-          tag.homestoryrewards.com/runbook: {{ vars['runbook'] }}
-          tag.homestoryrewards.com/environment: {{ vars['environment'] }}
+          tag.mycompany.com/team: {{ vars['team'] }}
+          tag.mycompany.com/managed_by: {{ vars['managed_by'] }}
+          tag.mycompany.com/billing: {{ vars['billing'] }}
+          tag.mycompany.com/runbook: {{ vars['runbook'] }}
+          tag.mycompany.com/environment: {{ vars['environment'] }}
       spec:
         selector:
           app: {{ vars['name'] }}
@@ -47,7 +47,7 @@ templates: - This section is a list of templates we want generated
 
 *base_path_append_name = HiddenField('Base Path Append Name')* - this will trigger '/{name}' to be appended to all base_path entries. Useful for things like terraform directory generation: some/path/s3/{name}.
 
-*cp_base_path_origin = HiddenField('Copy Base Path Origin')* - use the original base_path when copying the contents from tmpl_source_dir. This is helpful with Helm where you the shared configuration to be under a root dir with a values file under root/{environment}
+*cp_base_path_origin = HiddenField('Copy Base Path Origin')* - use the original base_path when copying the contents from tmpl_source_dir. This is helpful with Helm where you invoke one of the base_path_append options but want the shared configuration to be under the root dir with a values file under root/{environment}
 
 *name_override = HiddenField('Filename Override')* - this will cause the name to be overridden with form values "{name}-{environment}" (same as the default value for target_file.) This is intended to enforce naming conventions without requiring people filling out the form to be aware of them.
 
@@ -55,14 +55,15 @@ templates: - This section is a list of templates we want generated
 
 Currently gatehouse only supports a single git repository per generator.
 
-Gatehouse also currently only supports bitbucket.
+Gatehouse also currently only supports bitbucket cloud (via user and password) and google auth.
 
 # Notes
 
 I ended up needing to downgrade and pin:
-* werkzeug = "^2.3.7"
-* flask = "^2.3.3"
-* flask-wtf = "1.1.1"
+
+- werkzeug = "^2.3.7"
+- flask = "^2.3.3"
+- flask-wtf = "1.1.1"
 
 to support flask-login for session management
 
